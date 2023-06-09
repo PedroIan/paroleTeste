@@ -47,14 +47,19 @@ function parole(tabuleiro, palavra) {
   }
 
   function checkTree(word, mapa, start) {
+    // Caso não tenha mais palavra para conferir,
+    // significa que chegou ao final
     if (!word.length) return true;
 
+    // É feito uma cópia para não modificar a original
     const wordCopy = [...word];
     const letter = wordCopy.shift();
 
     const possibleNodes = [...(mapa.get(letter) ?? [])];
 
+    // Se não há letra possível, já retorna false
     if (!possibleNodes.length) return false;
+
     let childNodes = [];
     if (start) childNodes = possibleNodes.filter((xy) => isNearby(xy, start));
     else childNodes = possibleNodes;
@@ -62,10 +67,13 @@ function parole(tabuleiro, palavra) {
     // Significa que não há a letra no arredor
     if (!childNodes.length) return false;
 
+    // Retorna se alguma das sub-palavras retornar verdadeiro
     return !!childNodes.some((node) => {
       const mapCopy = new Map(mapa);
       mapCopy.set(
         letter,
+        // Remove a letra em questão para usá-la como início para
+        // a próxima sub-palavra
         possibleNodes.filter((xy) => !(xy.x == node.x && xy.y == node.y)) ?? []
       );
       return checkTree(wordCopy, mapCopy, node);
