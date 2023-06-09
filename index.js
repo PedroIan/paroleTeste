@@ -28,6 +28,9 @@
  */
 function parole(tabuleiro, palavra) {
   // Iniciar por mapear o tabuleiro
+  // Cada letra é salva como um mapa
+  // no qual o index é a letra e o valor
+  // é um array de indexes no formato {x, y}
   const tabuleiroMap = new Map();
   tabuleiro.forEach((row, x) => {
     row.forEach((letter, y) => {
@@ -38,8 +41,38 @@ function parole(tabuleiro, palavra) {
       }
     });
   });
-  console.log(tabuleiroMap);
-  return;
+
+  function isNearby(cell1, cell2) {
+    return Math.abs(cell1.x - cell2.x) <= 1 && Math.abs(cell1.y - cell2.y) <= 1;
+  }
+
+  function checkTree(word, mapa, start) {
+    if (!word.length) return true;
+
+    const wordCopy = [...word];
+    const letter = wordCopy.shift();
+
+    const possibleNodes = [...(mapa.get(letter) ?? [])];
+
+    if (!possibleNodes.length) return false;
+    let childNodes = [];
+    if (start) childNodes = possibleNodes.filter((xy) => isNearby(xy, start));
+    else childNodes = possibleNodes;
+
+    // Significa que não há a letra no arredor
+    if (!childNodes.length) return false;
+
+    return !!childNodes.some((node) => {
+      const mapCopy = new Map(mapa);
+      mapCopy.set(
+        letter,
+        possibleNodes.filter((xy) => !(xy.x == node.x && xy.y == node.y)) ?? []
+      );
+      return checkTree(wordCopy, mapCopy, node);
+    });
+  }
+
+  return checkTree(palavra.split(''), tabuleiroMap, null);
 }
 
 module.exports = parole;

@@ -4,7 +4,7 @@ var tabuleiro = [
   ['E', 'A', 'R', 'A'],
   ['N', 'L', 'E', 'C'],
   ['I', 'A', 'I', 'S'],
-  ['B', 'Y', 'O', 'R']
+  ['B', 'Y', 'O', 'R'],
 ];
 
 test('Parole valido', () => {
@@ -20,4 +20,8 @@ test('Parole invalido', () => {
   expect(parole(tabuleiro, 'ROBES')).toBe(false);
   expect(parole(tabuleiro, 'BAKER')).toBe(false);
   expect(parole(tabuleiro, 'CARS')).toBe(false);
+
+  // Testes adicionais pessoais
+  expect(parole(tabuleiro, 'ELNEL')).toBe(false);
+  expect(parole(tabuleiro, 'ELEAE')).toBe(false);
 });
